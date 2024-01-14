@@ -2,7 +2,7 @@ import fly
 from djitellopy import tello
 import pygame
 from time import sleep
-import cv2
+import face_tracking
 
 fly.init()
 
@@ -12,9 +12,6 @@ print(dron.get_battery())
 
 dron.streamon()
 dron.takeoff()
-
-
-
 
 
 def get_key_input():
@@ -48,14 +45,18 @@ def get_key_input():
         elif fly.get_key("e"):
             dron.takeoff()
 
+        if fly.get_key("f"):
+            fb_range = [6200, 6800]
+            pid = [0.4, 0.4, 0]
+            p_error = 0
+            w, h = 360, 240
+            pokretanje = face_tracking.FaceTracking(fb_range, pid, p_error, w, h, dron)
+            pokretanje.pokretanje_svih_definicija()
+
     return [left_right, up_down, forward_back, yaw]
 
 
 while True:
-    image = dron.get_frame_read().frame
-    cv2.imshow("Image", image)
-    cv2.waitKey(1)
     vals = get_key_input()
     dron.send_rc_control(vals[0], vals[1], vals[2], vals[3])
     sleep(0.05)
-
