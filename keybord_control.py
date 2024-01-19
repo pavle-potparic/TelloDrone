@@ -1,61 +1,41 @@
-import fly
 from djitellopy import tello
-import pygame
+import fly as kp
 from time import sleep
-import cv2
 
-fly.init()
-
-dron = tello.Tello()
-dron.connect()
-print(dron.get_battery())
-
-dron.streamon()
-dron.takeoff()
+kp.init()
+me = tello.Tello()
+me.connect()
+print(me.get_battery())
 
 
-
-
-
-def get_key_input():
-    left_right = 0
-    forward_back = 0
-    up_down = 0
-    yaw = 0
+def getKeyboardInput():
+    lr, fb, ud, yv = 0, 0, 0, 0
     speed = 50
-
-    for event in pygame.event.get():
-
-        if fly.get_key("LEFT"):
-            left_right = -speed
-        elif fly.get_key("RIGHT"):
-            left_right = speed
-        if fly.get_key("UP"):
-            up_down = speed
-        elif fly.get_key("DOWN"):
-            up_down = -speed
-        if fly.get_key("w"):
-            forward_back = speed
-        elif fly.get_key("s"):
-            forward_back = -speed
-        if fly.get_key("a"):
-            yaw = speed
-        elif fly.get_key("d"):
-            yaw = -speed
-
-        if fly.get_key("q"):
-            dron.land()
-        elif fly.get_key("e"):
-            dron.takeoff()
-
-    return [left_right, up_down, forward_back, yaw]
+    if kp.getKey("LEFT"):
+        lr = -speed
+    elif kp.getKey("RIGHT"):
+        lr = speed
+    if kp.getKey("UP"):
+        fb = speed
+    elif kp.getKey("DOWN"):
+        fb = -speed
+    if kp.getKey("w"):
+        ud = speed
+    elif kp.getKey("s"):
+        ud = -speed
+    if kp.getKey("a"):
+        yv = -speed
+    elif kp.getKey("d"):
+        yv = speed
+    if kp.getKey("q"):
+        me.land()
+        sleep(3)
+    if kp.getKey("e"):
+        me.takeoff()
+    return [lr, fb, ud, yv]
 
 
 while True:
-    image = dron.get_frame_read().frame
-    cv2.imshow("Image", image)
-    cv2.waitKey(1)
-    vals = get_key_input()
-    dron.send_rc_control(vals[0], vals[1], vals[2], vals[3])
+    vals = getKeyboardInput()
+    me.send_rc_control(vals[0], vals[1], vals[2], vals[3])
     sleep(0.05)
-
