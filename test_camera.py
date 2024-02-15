@@ -47,20 +47,20 @@ myRectangle8 = pygame.Rect(rect8X, rect8Y, 40, rectHeight)
 joystick_image = pygame.image.load("joystic.png")
 joystick_rect = joystick_image.get_rect()
 
-import fly
-from djitellopy import tello
-import pygame
-from time import sleep
-import face_tracking
+# import fly
+# from djitellopy import tello
+# import pygame
+# from time import sleep
+# import face_tracking
 
-fly.init()
-
-dron = tello.Tello()
-dron.connect()
-print(dron.get_battery())
-
-dron.streamon()
-dron.takeoff()
+# fly.init()
+#
+# dron = tello.Tello()
+# dron.connect()
+# print(dron.get_battery())
+#
+# dron.streamon()
+# dron.takeoff()
 
 def main():
     global FPSCLOCK, DISPLAYSURF, event
@@ -72,24 +72,32 @@ def main():
     mousex = 0
     mousey = 0
 
+    transparent_surface1 = pygame.Surface((rectWidth, rectHeight), pygame.SRCALPHA)
+    transparent_surface1.fill(BEFORECLICK + (0,))
+    transparent_surface2 = pygame.Surface((rectWidth, rectHeight), pygame.SRCALPHA)
+    transparent_surface2.fill(BEFORECLICK + (0,))
+    transparent_surface3 = pygame.Surface((rectWidth, rectHeight), pygame.SRCALPHA)
+    transparent_surface3.fill(BEFORECLICK + (0,))
+    transparent_surface4 = pygame.Surface((rectWidth, rectHeight), pygame.SRCALPHA)
+    transparent_surface4.fill(BEFORECLICK + (0,))
     transparent_surface5 = pygame.Surface((rectWidth, rectHeight), pygame.SRCALPHA)
-    transparent_surface5.fill(BEFORECLICK + (128,))
+    transparent_surface5.fill(BEFORECLICK + (0,))
     transparent_surface6 = pygame.Surface((rectWidth, rectHeight), pygame.SRCALPHA)
-    transparent_surface6.fill(BEFORECLICK + (128,))
+    transparent_surface6.fill(BEFORECLICK + (0,))
     transparent_surface7 = pygame.Surface((rectWidth, rectHeight), pygame.SRCALPHA)
-    transparent_surface7.fill(BEFORECLICK + (128,))
+    transparent_surface7.fill(BEFORECLICK + (0,))
     transparent_surface8 = pygame.Surface((rectWidth, rectHeight), pygame.SRCALPHA)
-    transparent_surface8.fill(BEFORECLICK + (128,))
+    transparent_surface8.fill(BEFORECLICK + (0,))
 
     while True:
         mouseClicked = False
         DISPLAYSURF.fill(BGCOLOR)
         DISPLAYSURF.blit(joystick_image, joystick_rect)
 
-        pygame.draw.rect(DISPLAYSURF, BEFORECLICK, myRectangle1)
-        pygame.draw.rect(DISPLAYSURF, BEFORECLICK, myRectangle2)
-        pygame.draw.rect(DISPLAYSURF, BEFORECLICK, myRectangle3)
-        pygame.draw.rect(DISPLAYSURF, BEFORECLICK, myRectangle4)
+        DISPLAYSURF.blit(transparent_surface1, myRectangle1.topleft)
+        DISPLAYSURF.blit(transparent_surface2, myRectangle2.topleft)
+        DISPLAYSURF.blit(transparent_surface3, myRectangle3.topleft)
+        DISPLAYSURF.blit(transparent_surface4, myRectangle4.topleft)
         DISPLAYSURF.blit(transparent_surface5, myRectangle5.topleft)
         DISPLAYSURF.blit(transparent_surface6, myRectangle6.topleft)
         DISPLAYSURF.blit(transparent_surface7, myRectangle7.topleft)
@@ -197,7 +205,7 @@ def main():
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
-        dron.send_rc_control(left_right, 0, up_down, 0)
+        # dron.send_rc_control(left_right, 0, up_down, 0)
 
 
 def determine_mouseOver(valx, valy, rectangle):

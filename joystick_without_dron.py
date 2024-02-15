@@ -1,6 +1,8 @@
 import pygame
 import sys
 from pygame.locals import *
+import fly
+from djitellopy import tello
 
 FPS = 30
 BGCOLOR = (3, 115, 46)
@@ -38,6 +40,15 @@ myRectangle6 = pygame.Rect(rect6X, rect6Y, 40, rectHeight)
 
 joystick_image = pygame.image.load("joystic.png")
 joystick_rect = joystick_image.get_rect()
+
+fly.init()
+
+dron = tello.Tello()
+dron.connect()
+print(dron.get_battery())
+
+dron.streamon()
+dron.takeoff()
 
 
 def main():
@@ -141,7 +152,7 @@ def main():
         pygame.display.update()
         FPSCLOCK.tick(30)
 
-        # dron.send_rc_control(left_right, 0, up_down, 0)
+        dron.send_rc_control(left_right, forward_back, up_down, yaw)
 
 
 def determine_mouseOver(valx, valy, rectangle):
