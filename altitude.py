@@ -295,7 +295,6 @@ def main():
         #
         # dron.send_rc_control(left_right, forward_back, up_down, yaw)
 
-
 def determine_mouseOver(valx, valy, rectangle):
     if rectangle.collidepoint(valx, valy):
         return True
