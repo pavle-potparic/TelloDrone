@@ -67,7 +67,6 @@ print(dron.get_battery())
 dron.streamon()
 dron.takeoff()
 
-
 def main():
     global FPSCLOCK, DISPLAYSURF, event
     pygame.init()
@@ -238,6 +237,7 @@ def main():
         FPSCLOCK.tick(FPS)
 
         dron.send_rc_control(left_right, forward_back, up_down, yaw)
+        # dron.send_rc_control(left_right, 0, up_down, 0)
 
 
 def determine_mouseOver(valx, valy, rectangle):
