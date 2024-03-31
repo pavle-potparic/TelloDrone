@@ -281,10 +281,6 @@ def main():
         # text = font.render(f"Visina: {(current_altitude + 40) / 100} m", True, FONT_COLOR)
         # text_rect = text.get_rect(center=(boardWidth // 2, boardHeight - 650))
         #
-        # stepeni += yaw * elapsed_time
-        # stepeni = stepeni % 360
-        #
-        # text2 = font.render(f"Ugao: {int(stepeni)}°", True, "blue")
         # text_rect2 = text.get_rect(center=(boardWidth // 2, boardHeight - 620))
         #
         # DISPLAYSURF.blit(text, text_rect)
