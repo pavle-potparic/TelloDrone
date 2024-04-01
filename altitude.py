@@ -69,6 +69,8 @@ stepeni = 0
 
 joystick_image = pygame.image.load("joystic.png")
 joystick_rect = joystick_image.get_rect()
+
+
 #
 #
 # dron = Tello()
@@ -274,8 +276,14 @@ def main():
         #     cv2.destroyWindow("Camera View")
 
         if mouseOverCamera and mouseClicked:
+            with open('cuvanje_slika.txt', 'r') as num_of_pictures:
+                number = int(num_of_pictures.read())
+            number += 1
             ret, frame = cv2.VideoCapture(0).read()
             cv2.imshow('Camera', frame)
+            cv2.imwrite(f'C:/Users/Administrator/PycharmProjects/tello{number}.jpg', frame)
+            with open('cuvanje_slika.txt', 'w') as save_change:
+                save_change.write(str(number))
 
         # current_altitude = dron.get_height()
         # text = font.render(f"Visina: {(current_altitude + 40) / 100} m", True, FONT_COLOR)
@@ -290,6 +298,7 @@ def main():
         FPSCLOCK.tick(30)
         #
         # dron.send_rc_control(left_right, forward_back, up_down, yaw)
+
 
 def determine_mouseOver(valx, valy, rectangle):
     if rectangle.collidepoint(valx, valy):
