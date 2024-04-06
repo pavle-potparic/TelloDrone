@@ -79,6 +79,10 @@ joystick_rect = joystick_image.get_rect()
 #
 # dron.streamon()
 
+def ability_after_click(click, rect, over_rect):
+    if click and over_rect:
+        pygame.draw.rect(DISPLAYSURF, AFTERCLICK, rect)
+
 
 def main():
     global FPSCLOCK, DISPLAYSURF, event, dron, stepeni, cameraOn
@@ -155,50 +159,39 @@ def main():
                 mouseClicked = True
 
         mouseOverCamera = determine_mouseOver(mousex, mousey, myRectangleCamera)
-        if mouseClicked and mouseOverCamera:
-            pygame.draw.rect(DISPLAYSURF, AFTERCLICK, myRectangleCamera)
+        ability_after_click(mouseClicked, myRectangleCamera, mouseOverCamera)
 
         mouseOver1 = determine_mouseOver(mousex, mousey, myRectangle1)
-        if mouseClicked and mouseOver1:
-            pygame.draw.rect(DISPLAYSURF, AFTERCLICK, myRectangle1)
+        ability_after_click(mouseClicked, myRectangle1, mouseOver1)
 
         mouseOver2 = determine_mouseOver(mousex, mousey, myRectangle2)
-        if mouseClicked and mouseOver2:
-            pygame.draw.rect(DISPLAYSURF, AFTERCLICK, myRectangle2)
+        ability_after_click(mouseClicked, myRectangle2, mouseOver2)
 
         mouseOver3 = determine_mouseOver(mousex, mousey, myRectangle3)
-        if mouseClicked and mouseOver3:
-            pygame.draw.rect(DISPLAYSURF, AFTERCLICK, myRectangle3)
+        ability_after_click(mouseClicked, myRectangle3, mouseOver3)
 
         mouseOver4 = determine_mouseOver(mousex, mousey, myRectangle4)
-        if mouseClicked and mouseOver4:
-            pygame.draw.rect(DISPLAYSURF, AFTERCLICK, myRectangle4)
+        ability_after_click(mouseClicked, myRectangle4, mouseOver4)
 
         mouseOver5 = determine_mouseOver(mousex, mousey, myRectangle5)
-        if mouseClicked and mouseOver5:
-            DISPLAYSURF.blit(transparent_surface5, myRectangle5.topleft)
+        ability_after_click(mouseClicked, myRectangle5, mouseOver5)
 
         mouseOver6 = determine_mouseOver(mousex, mousey, myRectangle6)
-        if mouseClicked and mouseOver6:
-            DISPLAYSURF.blit(transparent_surface6, myRectangle6.topleft)
+        ability_after_click(mouseClicked, myRectangle6, mouseOver6)
 
         mouseOver7 = determine_mouseOver(mousex, mousey, myRectangle7)
-        if mouseClicked and mouseOver7:
-            DISPLAYSURF.blit(transparent_surface7, myRectangle7.topleft)
+        ability_after_click(mouseClicked, myRectangle7, mouseOver7)
 
         mouseOver8 = determine_mouseOver(mousex, mousey, myRectangle8)
-        if mouseClicked and mouseOver8:
-            DISPLAYSURF.blit(transparent_surface8, myRectangle8.topleft)
+        ability_after_click(mouseClicked, myRectangle8, mouseOver8)
 
         mouseOver9 = determine_mouseOver(mousex, mousey, myRectangle9)
-        if mouseClicked and mouseOver9:
-            DISPLAYSURF.blit(transparent_surface9, myRectangle9.topleft)
+        ability_after_click(mouseClicked, myRectangle9, mouseOver9)
 
         mouseOver10 = determine_mouseOver(mousex, mousey, myRectangle10)
-        if mouseClicked and mouseOver10:
-            DISPLAYSURF.blit(transparent_surface10, myRectangle10.topleft)
+        ability_after_click(mouseClicked, myRectangle10, mouseOver10)
 
-        elif mouseOver1 and not mouseClicked:
+        if mouseOver1 and not mouseClicked:
             pygame.draw.rect(DISPLAYSURF, AFTERCLICK, myRectangle1, 3)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 print("left")
@@ -281,7 +274,7 @@ def main():
             number += 1
             ret, frame = cv2.VideoCapture(0).read()
             cv2.imshow('Camera', frame)
-            cv2.imwrite(f'C:/Users/Administrator/PycharmProjects/tello{number}.jpg', frame)
+            cv2.imwrite(f'C:/Users/Administrator/PycharmProjects/tello_dron_slike/tello{number}.jpg', frame)
             with open('cuvanje_slika.txt', 'w') as save_change:
                 save_change.write(str(number))
 
