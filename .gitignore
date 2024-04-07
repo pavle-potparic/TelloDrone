@@ -1,5 +1,5 @@
 # Ignore specific files
 
-
 # Ignore specific folders
- tello_dron_images/
+/.idea/
+/tello_dron_images/
