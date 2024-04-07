@@ -1,4 +1,5 @@
 # Ignore specific files
+/.idea/misc.xml
 
 # Ignore specific folders
 /.idea/
