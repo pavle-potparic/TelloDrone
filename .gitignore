@@ -1,0 +1,6 @@
+# Ignore specific files
+/.idea/misc.xml
+
+# Ignore specific folders
+/.idea/
+/tello_dron_images/

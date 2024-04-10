@@ -1,7 +1,6 @@
 import pygame
 import sys
 from pygame.locals import *
-import fly
 from djitellopy import tello
 
 FPS = 30
@@ -40,8 +39,6 @@ myRectangle6 = pygame.Rect(rect6X, rect6Y, 40, rectHeight)
 
 joystick_image = pygame.image.load("joystic.png")
 joystick_rect = joystick_image.get_rect()
-
-fly.init()
 
 dron = tello.Tello()
 dron.connect()
