@@ -1,8 +1,10 @@
+import numpy as np
 import pygame
 import sys
 from pygame.locals import *
 from djitellopy import Tello
 import cv2
+import os
 
 CONNECT_DRON = False
 FPS = 30
@@ -46,6 +48,15 @@ buttonLand = pygame.Rect(623, 490, BUTTON_FLY_WIDTH, BUTTON_FLY_HEIGHT)
 rectCameraHeight = 40
 buttonCamera = pygame.Rect(491, 503, BUTTON_WIDTH_GENERAL, rectCameraHeight)
 cameraOn = False
+
+BUTTON_FACE_TRACKING_WIDTH = 25
+BUTTON_FACE_TRACKING_HEIGHT = 40
+buttonFaceTracking = pygame.Rect(327, 293, BUTTON_FACE_TRACKING_WIDTH, BUTTON_FACE_TRACKING_HEIGHT)
+
+BUTTON_RECORD_WIDTH = 25
+BUTTON_RECORD_HEIGHT = 40
+buttonRecord = pygame.Rect(669, 293, BUTTON_RECORD_WIDTH, BUTTON_RECORD_HEIGHT)
+
 degree = 0
 
 joystick_image = pygame.image.load("joystic.png")
@@ -96,6 +107,12 @@ def main():
     transparent_surface_button_land.fill(BEFORE_CLICK + (0,))
     transparent_surface_camera = pygame.Surface((BUTTON_WIDTH_GENERAL, rectCameraHeight), pygame.SRCALPHA)
     transparent_surface_camera.fill(BEFORE_CLICK + (0,))
+    transparent_surface_face_tracking = pygame.Surface((BUTTON_FACE_TRACKING_WIDTH, BUTTON_FACE_TRACKING_HEIGHT),
+                                                       pygame.SRCALPHA)
+    transparent_surface_face_tracking.fill(BEFORE_CLICK + (0,))
+    transparent_surface_record = pygame.Surface((BUTTON_RECORD_WIDTH, BUTTON_RECORD_HEIGHT),
+                                                pygame.SRCALPHA)
+    transparent_surface_record.fill(BEFORE_CLICK + (0,))
 
     last_update_time = pygame.time.get_ticks()
     font = pygame.font.Font(None, 36)
@@ -122,6 +139,8 @@ def main():
         DISPLAYSURF.blit(transparent_surface_button_take_off, buttonTakeOff.topleft)
         DISPLAYSURF.blit(transparent_surface_button_land, buttonLand.topleft)
         DISPLAYSURF.blit(transparent_surface_camera, buttonCamera.topleft)
+        DISPLAYSURF.blit(transparent_surface_face_tracking, buttonFaceTracking.topleft)
+        DISPLAYSURF.blit(transparent_surface_record, buttonRecord.topleft)
 
         left_right = 0
         forward_back = 0
@@ -171,6 +190,12 @@ def main():
 
         mouseover_button_land = determine_mouseover(mouse_x, mouse_y, buttonLand)
         change_button_color_after_click(mouse_clicked, buttonLand, mouseover_button_land)
+
+        mouseover_face_tracking = determine_mouseover(mouse_x, mouse_y, buttonFaceTracking)
+        change_button_color_after_click(mouse_clicked, buttonFaceTracking, mouseover_face_tracking)
+
+        mouseover_record = determine_mouseover(mouse_x, mouse_y, buttonRecord)
+        change_button_color_after_click(mouse_clicked, buttonRecord, mouseover_record)
 
         if mouseover_button_left and not mouse_clicked:
             pygame.draw.rect(DISPLAYSURF, AFTER_CLICK, buttonLeft, 3)
@@ -232,6 +257,12 @@ def main():
                 print("land")
                 dron.land()
 
+        elif mouseover_face_tracking and not mouse_clicked:
+            pygame.draw.rect(DISPLAYSURF, AFTER_CLICK, buttonFaceTracking, 3)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                print('face tracking')
+                return False
+
         elif mouseover_camera:
             pygame.draw.rect(DISPLAYSURF, AFTER_CLICK, buttonCamera, 3)
 
@@ -251,14 +282,39 @@ def main():
                 cv2.destroyWindow("Camera View")
 
         if mouseover_camera and mouse_clicked:
-            with open('cuvanje_slika.txt', 'r') as num_of_pictures:
+            with open('save_images.txt', 'r') as num_of_pictures:
                 number = int(num_of_pictures.read())
             number += 1
             ret, frame = cv2.VideoCapture(0).read()
             cv2.imshow('Camera', frame)
             cv2.imwrite(f'tello_dron_images/tello{number}.jpg', frame)
-            with open('cuvanje_slika.txt', 'w') as save_change:
+            with open('save_images.txt', 'w') as save_change:
                 save_change.write(str(number))
+
+        if mouseover_record and mouse_clicked:
+            putanja_za_cuvanje = 'C:/Users/Administrator/PycharmProjects/tello_dron_slike'
+            output_filename = putanja_za_cuvanje + 'output.mp4'
+
+            fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+            out = cv2.VideoWriter(output_filename, fourcc, 20.0, (640, 480))
+
+            cap = cv2.VideoCapture(0)
+
+            while True:
+                ret, frame = cap.read()
+
+                out.write(frame)
+
+                cv2.imshow('frame', frame)
+
+                if cv2.waitKey(1) == ord('q'):
+                    break
+
+            cap.release()
+            out.release()
+            cv2.destroyAllWindows()
+
+            os.startfile(output_filename)
 
         if CONNECT_DRON:
             current_altitude = dron.get_height()
@@ -281,5 +337,72 @@ def determine_mouseover(valx, valy, rectangle):
         return False
 
 
-if __name__ == "__main__":
-    main()
+loop = True
+while loop:
+    loop = main()
+
+
+def find_face(image):
+    face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    faces = face_cascade.detectMultiScale(gray_image, 1.2, 8)
+    my_face_list_c = []
+    my_face_list_area = []
+
+    for (x, y, w, h) in faces:
+        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 255), 2)
+        cx = x + w // 2
+        cy = y + h // 2
+        area = w * h
+        cv2.circle(image, (cx, cy), 5, (0, 255, 0), cv2.FILLED)
+        my_face_list_c.append([cx, cy])
+        my_face_list_area.append(area)
+
+    if len(my_face_list_area) != 0:
+        i = my_face_list_area.index(max(my_face_list_area))
+        return image, [my_face_list_c[i], my_face_list_area[i]]
+
+    else:
+        return image, [[0, 0], 0]
+
+
+def track_face(info, w, pid, p_error):
+    area = info[1]
+    x, y = info[0]
+    fb = 0
+    error = x - w // 2
+    speed = pid[0] * error + pid[1] * (error - p_error)
+    speed = int(np.clip(speed, -100, 100))
+
+    if fb_range[0] < area < fb_range[1]:
+        fb = 0
+
+    elif area > fb_range[1]:
+        fb = -20
+
+    elif area < fb_range[0] and area != 0:
+        fb = 20
+
+    if x == 0:
+        speed = 0
+        error = 0
+
+    dron.send_rc_control(0, fb, 0, speed)
+    return error
+
+
+if CONNECT_DRON:
+    w, h = 360, 240
+    fb_range = [6200, 6800]
+    pid = [0.4, 0.4, 0]
+    p_error = 0
+    while True:
+        img = dron.get_frame_read().frame
+        img = cv2.resize(img, (w, h))
+        img, info = find_face(img)
+        p_error = track_face(info, w, pid, p_error)
+        cv2.imshow("Output", img)
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            dron.land()
+            break
